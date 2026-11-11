@@ -1,0 +1,10 @@
+marker:
+  url: http://marker:8001
+embeddings:
+  url: http://ollama:11434
+  model: nomic-embed-text
+chat:
+  url: http://ollama:11434
+  model: qwen3:8b
+qdrant:
+  url: http://qdrant:6333
