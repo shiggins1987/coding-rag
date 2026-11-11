@@ -30,7 +30,7 @@ class Settings(BaseModel):
     qdrant: Endpoint = Endpoint(url="http://127.0.0.1:6333")
 
 def load_config(path: Path, env: Mapping[str, str] | None = None) -> Settings:
-    raw = yaml.safe_load(path.read_text(encoding="utf-8") or {})
+    raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     env = os.environ if env is None else env
     for key, (section, field) in _OVERRIDES.items():
         if env.get(key):

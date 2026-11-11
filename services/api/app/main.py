@@ -1,7 +1,10 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-
+from pathlib import Path
+import os
 from app.ports import Ready
+
+from app.config import Settings, load_config
 
 
 class AlwaysReady:
@@ -10,12 +13,14 @@ class AlwaysReady:
 
 
 def create_app(
+    config: Settings | None = None,
     marker: Ready | None = None,
     embeddings: Ready | None = None,
     chat: Ready | None = None,
     vector_store: Ready | None = None,
 ) -> FastAPI:
     app = FastAPI()
+    app.state.config = config or Settings()
     app.state.marker = marker or AlwaysReady()
     app.state.embeddings = embeddings or AlwaysReady()
     app.state.chat = chat or AlwaysReady()
@@ -36,3 +41,8 @@ def create_app(
             content={"status": "ok" if ok else "degraded", "checks": checks},
         )
     return app
+
+def build_app() -> FastAPI:
+    path = Path(os.environ.get("CODING_RAG_CONFIG", "config.yaml"))
+    return create_app(config=load_config(path))
+
